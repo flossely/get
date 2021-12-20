@@ -1,5 +1,6 @@
 <?php
 $default = file_get_contents('get.cfg');
+$ignorlist = (file_exists('ignore')) ? file_get_contents('ignore') : '';
 $host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex($default);
 $key = $_REQUEST['key'];
 $pkg = $_REQUEST['pkg'];
@@ -60,14 +61,11 @@ if ($key == 'i') {
             chmod($repo.'.d', 0777);
             rename($repo.'.d', $repo);
         }
-        if (file_exists('ignore')) {
-            $ignorlist = file_get_contents('ignore');
-            $ignore = explode(';', $ignorlist);
-            foreach ($ignore as $key=>$file) {
-                if (file_exists($file)) {
-                    chmod($file, 0777);
-                    unlink($file);
-                }
+        $ignore = explode(';', $ignorlist);
+        foreach ($ignore as $key=>$file) {
+            if (file_exists($file)) {
+                chmod($file, 0777);
+                unlink($file);
             }
         }
         foreach ($backup as $key=>$file) {
