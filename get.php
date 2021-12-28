@@ -1,12 +1,27 @@
 <?php
-$default = file_get_contents('get.cfg');
+// GETTING DEFAULT GIT SOURCE HOST
+if (file_exists('get.cfg')) {
+    $defopen = file_get_contents('get.cfg');
+    if ($defopen != '') {
+        $default = $defopen;
+    } else {
+        $default = 'https://github.com';
+    }
+} else {
+    $default = 'https://github.com';
+}
+
+// GETTING REQUEST DATA
 $host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex($default);
 $key = $_REQUEST['key'];
 $pkg = $_REQUEST['pkg'];
 $repo = $_REQUEST['repo'];
 $user = $_REQUEST['user'];
+
+// IN CASE YOU WANT TO INSTALL OR UPDATE PACKAGE
 if ($key == 'i') {
     if ($pkg == "from" && $repo != "" && $user != "") {
+        // REMOVE PACKAGE IF EXISTING
         if (file_exists($repo.'.pkg')) {
             $cont = file_get_contents($repo.'.pkg');
             if (strpos($cont, '=|1|=') !== false) {
@@ -26,6 +41,8 @@ if ($key == 'i') {
             chmod($repo.'.pkg', 0777);
             unlink($repo.'.pkg');
         }
+        
+        // BACKING UP FILES
         if (file_exists('backup')) {
             $backlist = file_get_contents('backup');
             $backup = explode(';', $backlist);
@@ -36,13 +53,19 @@ if ($key == 'i') {
                 }
             }
         }
+        
+        // SOLVING DIRECTORY CONFLICT
         if (file_exists($repo)) {
             chmod($repo, 0777);
             rename($repo, $repo.'.d');
         }
+        
+        // READY TO INSTALL PACKAGE
         $request = hex2bin($host).'/'.$user.'/'.$repo;
         exec('git clone '.$request);
         chmod($repo, 0777);
+        
+        // GETTING BACKUP LIST FROM PACKAGE REPO
         if (file_exists($repo.'/backup') && file_exists('backup')) {
             $backupInput = file_get_contents($repo.'/backup');
             $backupOutput = file_get_contents('backup');
@@ -53,13 +76,19 @@ if ($key == 'i') {
             chmod($repo.'/backup', 0777);
             unlink($repo.'/backup');
         }
+        
+        // MOVING ALL FILES FROM REPO TO CURRENT PATH
         exec('mv '.$repo.'/* $PWD');
         exec('chmod -R 777 .');
         exec('rm -rf '.$repo);
+        
+        // GETTING CONFLICTING DIRECTORY BACK
         if (file_exists($repo.'.d')) {
             chmod($repo.'.d', 0777);
             rename($repo.'.d', $repo);
         }
+        
+        // REMOVING UNWANTED FILES
         if (file_exists('ignore')) {
             $ignorlist = file_get_contents('ignore');
             $ignore = explode(';', $ignorlist);
@@ -70,18 +99,25 @@ if ($key == 'i') {
                 }
             }
         }
+        
+        // RESTORING FILES FROM BACKUP
         foreach ($backup as $key=>$file) {
             if (file_exists($file.'.bak')) {
                 rename($file.'.bak', $file);
                 chmod($file, 0777);
             }
         }
+        
+        // EXECUTING POST-INSTALLING SCRIPT
         if (file_exists('postsetup.php')) {
             include 'postsetup.php';
         }
     }
+    
+// IN CASE YOU WANT TO REPLACE PACKAGE WITH NEW
 } elseif ($key == 'r') {
     if ($pkg != "" && $repo != "" && $user != "") {
+        // REMOVING THE FORMER PACKAGE
         if (file_exists($pkg.'.pkg')) {
             $cont = file_get_contents($pkg.'.pkg');
             if (strpos($cont, '=|1|=') !== false) {
@@ -103,6 +139,8 @@ if ($key == 'i') {
         }
         header('Location: get.php?key=i&pkg=from&repo='.$repo.'&user='.$user);
     }
+
+// IN CASE YOU WANT TO REMOVE PACKAGE
 } elseif ($key == 'd') {
     if ($pkg != "" && $repo == 'from' && $user == 'here') {
         if (file_exists($pkg.'.pkg')) {
