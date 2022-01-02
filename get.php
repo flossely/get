@@ -65,18 +65,6 @@ if ($key == 'i') {
         exec('git clone '.$request);
         chmod($repo, 0777);
         
-        // GETTING BACKUP LIST FROM PACKAGE REPO
-        if (file_exists($repo.'/backup') && file_exists('backup')) {
-            $backupInput = file_get_contents($repo.'/backup');
-            $backupOutput = file_get_contents('backup');
-            $backupOutput .= $backupInput;
-            $backupOutput = implode(';', array_unique(explode(';', $backupOutput)));
-            file_put_contents('backup', $backupOutput);
-            chmod('backup', 0777);
-            chmod($repo.'/backup', 0777);
-            unlink($repo.'/backup');
-        }
-        
         // MOVING ALL FILES FROM REPO TO CURRENT PATH
         exec('mv '.$repo.'/* $PWD');
         exec('chmod -R 777 .');
@@ -106,11 +94,6 @@ if ($key == 'i') {
                 rename($file.'.bak', $file);
                 chmod($file, 0777);
             }
-        }
-        
-        // EXECUTING POST-INSTALLING SCRIPT
-        if (file_exists('postsetup.php')) {
-            include 'postsetup.php';
         }
     }
     
