@@ -1,21 +1,22 @@
 <?php
 // GETTING DEFAULT GIT SOURCE HOST
-if (file_exists('get.cfg')) {
-    $defopen = file_get_contents('get.cfg');
-    if ($defopen != '') {
-        $default = $defopen;
+if (file_exists('source.cfg')) {
+    $sourceOpen = file_get_contents('source.cfg');
+    if ($sourceOpen != '') {
+        $source = $sourceOpen;
     } else {
-        $default = 'https://github.com';
+        $source = 'https://github.com';
     }
 } else {
-    $default = 'https://github.com';
+    $source = 'https://github.com';
 }
 
 // GETTING REQUEST DATA
-$host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex($default);
+$host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex($source);
 $key = $_REQUEST['key'];
 $pkg = $_REQUEST['pkg'];
 $repo = $_REQUEST['repo'];
+$branch = ($_REQUEST['branch']) ? $_REQUEST['branch'] : '';
 $user = $_REQUEST['user'];
 
 // IN CASE YOU WANT TO INSTALL OR UPDATE PACKAGE
@@ -62,7 +63,11 @@ if ($key == 'i') {
         
         // READY TO INSTALL PACKAGE
         $request = hex2bin($host).'/'.$user.'/'.$repo;
-        exec('git clone '.$request);
+        if ($branch != '') {
+            exec('git clone -b '.$branch.' '.$request);
+        } else {
+            exec('git clone '.$request);
+        }
         chmod($repo, 0777);
         
         // MOVING ALL FILES FROM REPO TO CURRENT PATH
