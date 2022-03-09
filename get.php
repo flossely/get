@@ -1,18 +1,7 @@
 <?php
-// GETTING DEFAULT GIT SOURCE HOST
-if (file_exists('source.cfg')) {
-    $sourceOpen = file_get_contents('source.cfg');
-    if ($sourceOpen != '') {
-        $source = $sourceOpen;
-    } else {
-        $source = 'https://github.com';
-    }
-} else {
-    $source = 'https://github.com';
-}
 
 // GETTING REQUEST DATA
-$host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex($source);
+$host = ($_REQUEST['host']) ? $_REQUEST['host'] : '68747470733a2f2f6769746875622e636f6d';
 $key = $_REQUEST['key'];
 $pkg = $_REQUEST['pkg'];
 $repo = $_REQUEST['repo'];
