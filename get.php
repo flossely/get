@@ -1,8 +1,8 @@
 <?php
 
-// GETTING REQUEST DATA
-$host = ($_REQUEST['host']) ? $_REQUEST['host'] : '68747470733a2f2f6769746875622e636f6d';
+// GETTING REQUEST DATA SORTED BY THEIR ORDER IN GET FUNCTION
 $key = $_REQUEST['key'];
+$host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex('https://github.com');
 $pkg = $_REQUEST['pkg'];
 $repo = $_REQUEST['repo'];
 $branch = ($_REQUEST['branch']) ? $_REQUEST['branch'] : '';
@@ -114,7 +114,7 @@ if ($key == 'i') {
             chmod($pkg.'.pkg', 0777);
             unlink($pkg.'.pkg');
         }
-        header('Location: get.php?key=i&pkg=from&repo='.$repo.'&user='.$user);
+        header('Location: get.php?key=i&host='.$host.'&pkg=from&repo='.$repo.'&branch='.$branch.'&user='.$user);
     }
 
 // IN CASE YOU WANT TO REMOVE PACKAGE
