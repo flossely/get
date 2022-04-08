@@ -14,8 +14,8 @@ if ($key == 'i') {
         // REMOVE PACKAGE IF EXISTING
         if (file_exists($repo.'.pkg')) {
             $cont = file_get_contents($repo.'.pkg');
-            if (strpos($cont, '=|1|=') !== false) {
-                $contExp1 = explode('=|1|=', $cont);
+            if (strpos($cont, '|[1]|') !== false) {
+                $contExp1 = explode('|[1]|', $cont);
                 $contHead = $contExp1[0];
                 $list = $contExp1[1];
             } else {
@@ -97,8 +97,8 @@ if ($key == 'i') {
         // REMOVING THE FORMER PACKAGE
         if (file_exists($pkg.'.pkg')) {
             $cont = file_get_contents($pkg.'.pkg');
-            if (strpos($cont, '=|1|=') !== false) {
-                $contExp1 = explode('=|1|=', $cont);
+            if (strpos($cont, '|[1]|') !== false) {
+                $contExp1 = explode('|[1]|', $cont);
                 $contHead = $contExp1[0];
                 $list = $contExp1[1];
             } else {
@@ -122,8 +122,8 @@ if ($key == 'i') {
     if ($pkg != "" && $repo == 'from' && $user == 'here') {
         if (file_exists($pkg.'.pkg')) {
             $cont = file_get_contents($pkg.'.pkg');
-            if (strpos($cont, '=|1|=') !== false) {
-                $contExp1 = explode('=|1|=', $cont);
+            if (strpos($cont, '|[1]|') !== false) {
+                $contExp1 = explode('|[1]|', $cont);
                 $contHead = $contExp1[0];
                 $list = $contExp1[1];
             } else {
