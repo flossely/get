@@ -2,7 +2,7 @@
 
 // GETTING REQUEST DATA SORTED BY THEIR ORDER IN GET FUNCTION
 $key = $_REQUEST['key'];
-$host = ($_REQUEST['host']) ? $_REQUEST['host'] : bin2hex('https://github.com');
+$host = ($_REQUEST['host']) ? $_REQUEST['host'] : 'https://github.com';
 $pkg = $_REQUEST['pkg'];
 $repo = $_REQUEST['repo'];
 $branch = ($_REQUEST['branch']) ? $_REQUEST['branch'] : '';
@@ -51,7 +51,7 @@ if ($key == 'i') {
         }
         
         // READY TO INSTALL PACKAGE
-        $request = hex2bin($host).'/'.$user.'/'.$repo;
+        $request = $host.'/'.$user.'/'.$repo;
         if ($branch != '') {
             exec('git clone -b '.$branch.' '.$request);
         } else {
